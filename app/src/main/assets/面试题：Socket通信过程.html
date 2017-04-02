@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>面试题：Socket通信过程</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<style type="text/css">
+/* GitHub stylesheet for MarkdownPad (http://markdownpad.com) */
+/* Author: Nicolas Hery - http://nicolashery.com */
+/* Version: b13fe65ca28d2e568c6ed5d7f06581183df8f2ff */
+/* Source: https://github.com/nicolahery/markdownpad-github */
+
+/* RESET
+=============================================================================*/
+
+html, body, div, span, applet, object, iframe, h1, h2, h3, h4, h5, h6, p, blockquote, pre, a, abbr, acronym, address, big, cite, code, del, dfn, em, img, ins, kbd, q, s, samp, small, strike, strong, sub, sup, tt, var, b, u, i, center, dl, dt, dd, ol, ul, li, fieldset, form, label, legend, table, caption, tbody, tfoot, thead, tr, th, td, article, aside, canvas, details, embed, figure, figcaption, footer, header, hgroup, menu, nav, output, ruby, section, summary, time, mark, audio, video {
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+/* BODY
+=============================================================================*/
+
+body {
+  font-family: Helvetica, arial, freesans, clean, sans-serif;
+  font-size: 14px;
+  line-height: 1.6;
+  color: #333;
+  background-color: #fff;
+  padding: 20px;
+  max-width: 960px;
+  margin: 0 auto;
+}
+
+body>*:first-child {
+  margin-top: 0 !important;
+}
+
+body>*:last-child {
+  margin-bottom: 0 !important;
+}
+
+/* BLOCKS
+=============================================================================*/
+
+p, blockquote, ul, ol, dl, table, pre {
+  margin: 15px 0;
+}
+
+/* HEADERS
+=============================================================================*/
+
+h1, h2, h3, h4, h5, h6 {
+  margin: 20px 0 10px;
+  padding: 0;
+  font-weight: bold;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1 tt, h1 code, h2 tt, h2 code, h3 tt, h3 code, h4 tt, h4 code, h5 tt, h5 code, h6 tt, h6 code {
+  font-size: inherit;
+}
+
+h1 {
+  font-size: 28px;
+  color: #000;
+}
+
+h2 {
+  font-size: 24px;
+  border-bottom: 1px solid #ccc;
+  color: #000;
+}
+
+h3 {
+  font-size: 18px;
+}
+
+h4 {
+  font-size: 16px;
+}
+
+h5 {
+  font-size: 14px;
+}
+
+h6 {
+  color: #777;
+  font-size: 14px;
+}
+
+body>h2:first-child, body>h1:first-child, body>h1:first-child+h2, body>h3:first-child, body>h4:first-child, body>h5:first-child, body>h6:first-child {
+  margin-top: 0;
+  padding-top: 0;
+}
+
+a:first-child h1, a:first-child h2, a:first-child h3, a:first-child h4, a:first-child h5, a:first-child h6 {
+  margin-top: 0;
+  padding-top: 0;
+}
+
+h1+p, h2+p, h3+p, h4+p, h5+p, h6+p {
+  margin-top: 10px;
+}
+
+/* LINKS
+=============================================================================*/
+
+a {
+  color: #4183C4;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+/* LISTS
+=============================================================================*/
+
+ul, ol {
+  padding-left: 30px;
+}
+
+ul li > :first-child, 
+ol li > :first-child, 
+ul li ul:first-of-type, 
+ol li ol:first-of-type, 
+ul li ol:first-of-type, 
+ol li ul:first-of-type {
+  margin-top: 0px;
+}
+
+ul ul, ul ol, ol ol, ol ul {
+  margin-bottom: 0;
+}
+
+dl {
+  padding: 0;
+}
+
+dl dt {
+  font-size: 14px;
+  font-weight: bold;
+  font-style: italic;
+  padding: 0;
+  margin: 15px 0 5px;
+}
+
+dl dt:first-child {
+  padding: 0;
+}
+
+dl dt>:first-child {
+  margin-top: 0px;
+}
+
+dl dt>:last-child {
+  margin-bottom: 0px;
+}
+
+dl dd {
+  margin: 0 0 15px;
+  padding: 0 15px;
+}
+
+dl dd>:first-child {
+  margin-top: 0px;
+}
+
+dl dd>:last-child {
+  margin-bottom: 0px;
+}
+
+/* CODE
+=============================================================================*/
+
+pre, code, tt {
+  font-size: 12px;
+  font-family: Consolas, "Liberation Mono", Courier, monospace;
+}
+
+code, tt {
+  margin: 0 0px;
+  padding: 0px 0px;
+  white-space: nowrap;
+  border: 1px solid #eaeaea;
+  background-color: #f8f8f8;
+  border-radius: 3px;
+}
+
+pre>code {
+  margin: 0;
+  padding: 0;
+  white-space: pre;
+  border: none;
+  background: transparent;
+}
+
+pre {
+  background-color: #f8f8f8;
+  border: 1px solid #ccc;
+  font-size: 13px;
+  line-height: 19px;
+  overflow: auto;
+  padding: 6px 10px;
+  border-radius: 3px;
+}
+
+pre code, pre tt {
+  background-color: transparent;
+  border: none;
+}
+
+kbd {
+    -moz-border-bottom-colors: none;
+    -moz-border-left-colors: none;
+    -moz-border-right-colors: none;
+    -moz-border-top-colors: none;
+    background-color: #DDDDDD;
+    background-image: linear-gradient(#F1F1F1, #DDDDDD);
+    background-repeat: repeat-x;
+    border-color: #DDDDDD #CCCCCC #CCCCCC #DDDDDD;
+    border-image: none;
+    border-radius: 2px 2px 2px 2px;
+    border-style: solid;
+    border-width: 1px;
+    font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+    line-height: 10px;
+    padding: 1px 4px;
+}
+
+/* QUOTES
+=============================================================================*/
+
+blockquote {
+  border-left: 4px solid #DDD;
+  padding: 0 15px;
+  color: #777;
+}
+
+blockquote>:first-child {
+  margin-top: 0px;
+}
+
+blockquote>:last-child {
+  margin-bottom: 0px;
+}
+
+/* HORIZONTAL RULES
+=============================================================================*/
+
+hr {
+  clear: both;
+  margin: 15px 0;
+  height: 0px;
+  overflow: hidden;
+  border: none;
+  background: transparent;
+  border-bottom: 4px solid #ddd;
+  padding: 0;
+}
+
+/* TABLES
+=============================================================================*/
+
+table th {
+  font-weight: bold;
+}
+
+table th, table td {
+  border: 1px solid #ccc;
+  padding: 6px 13px;
+}
+
+table tr {
+  border-top: 1px solid #ccc;
+  background-color: #fff;
+}
+
+table tr:nth-child(2n) {
+  background-color: #f8f8f8;
+}
+
+/* IMAGES
+=============================================================================*/
+
+img {
+  max-width: 100%
+}
+</style>
+</head>
+<body>
+<h1>面试题：Socket通信过程</h1>
+<blockquote>
+<p>索引</p>
+<ul>
+<li><a href="#1">Socket介绍</a></li>
+<li><a href="#2">案例实践</a></li>
+<li><a href="#3">总结通信过程</a></li>
+</ul>
+</blockquote>
+<p>关于网络，首先大家要了解一下网络的基本内容。</p>
+<p>网络如何通讯，首先要了解网络模型，当前最为广泛的模型有两种：OSI七层模型和TCP/IP四层模型。</p>
+<p><img src="http://i.imgur.com/m9udbb1.png" /></p>
+<p>网络通讯的三个重点要素：</p>
+<ol>
+<li>IP地址：网络设备的标识</li>
+<li>
+<p>端口号：用于标识进程的逻辑地址，有效端口：0--65535，其中0--1024为系统保留端口号</p>
+<p>一台拥有IP地址的主机可以提供许多服务，比如Web服务、FTP服务、SMTP服务等，这些服务完全可以通过1个IP地址来实现。那么，主机是怎样区分不同的网络服务呢？显然不能只靠IP地址，因为IP 地址与网络服务的关系是一对多的关系。实际上是通过“IP地址+端口号”来区分不同的服务的。</p>
+</li>
+<li>
+<p>传输协议：数据传输必须遵循的规则，常见网络协议：TCP、UDP</p>
+</li>
+</ol>
+<h1 id=1>Socket介绍</h1>
+<p>socket是对TCP/IP协议的封装和应用，主要针对于程序员的(应用层面)，Socket本身并不是协议，而是一个调用接口(API)。通过Socket，我们才能使用TCP/IP协议，简单的一个TCP/IP协议场景： 你要打电话给一个朋友，先拨号，朋友听到电话铃声后提起电话，这时你和你的朋友就建立起了连接，就可以讲话了。等交流结束，挂断电话结束此次交谈。</p>
+<p>Socket套接字，用于描述IP地址和端口号，是支持TCP/IP协议的网络通信的基本操作单元，是面向于客户端/服务器(C/S)模型而设计的，解决客户端和服务器通讯的问题。</p>
+<p>Socket基于TCP协议传输数据基本过程：</p>
+<ol>
+<li>创建Socket：指定地址和端口号，分为ClientSocket、ServerSocket。</li>
+<li>Socket连接：客户端和服务器端建立连接。</li>
+<li>打开Socket输入/输出流。</li>
+<li>对Socket进行读/写操作。</li>
+<li>关闭Socket。</li>
+</ol>
+<h1 id=2>案例实践</h1>
+<p>我们通过Socket建立一个基于TCP协议的聊天的通讯过程。</p>
+<h3>服务端</h3>
+<p>搭建服务端，我们简单的用一个java程序来搭建，运行开启即可。所以在AS中创建一个No Activity项目，建立一个类，创建main方法，在main方法中完成搭建，最后运行main方法即可。</p>
+<h4>1. 创建服务端socket</h4>
+<pre><code>public static void main(String[] args) throws IOException {
+
+    //建立ServerSocket,指定服务器的端口号
+    ServerSocket ss = new ServerSocket(4700);
+
+    //不断接收连接到此端口的socket
+    // 并且为每一个socket开启一个线程，用于处理接收信息
+    while (true) {
+
+        // 获取连接到当前端口的所有socket
+        Socket s = ss.accept();
+        System.out.println(&quot;connect success!&quot;);
+
+        // 为每一个Socket开启线程
+        new Thread(new ServerThread(s)).start();
+    }
+}
+</code></pre>
+
+<p>我们在服务器端为每一个连接的Socket开新线程，处理信息，处理信息的内容，我们放置到一个特意创建的线程来处理接收的消息及返回消息给客户端。</p>
+<pre><code>public class ServerThread implements Runnable {
+
+    private Socket mSocket = null;
+    private BufferedReader mBufferedReader = null;
+
+    // 构造函数中接收socket，并且初始化BufferedReader，用于读取客户端发送的消息
+    public ServerThread(Socket socket) throws IOException {
+        mSocket = socket;
+        mBufferedReader = new BufferedReader(
+                new InputStreamReader(mSocket.getInputStream(), &quot;utf-8&quot;));
+    }
+
+    @Override
+    public void run() {
+        try {
+            String content = null;
+            //循环接收来自此客户端的消息
+            while ((content = mBufferedReader.readLine()) != null) {
+                System.out.println(content);
+                try {
+
+                    // 拿到连接的客户端socket的输出流，用于数据输出给客户端
+                    OutputStream os = mSocket.getOutputStream();
+
+                    // 当客户端发送bye，结束通话
+                    if (content.equals(&quot;bye&quot;)) {
+                        os.write((&quot;通话结束&quot;).getBytes(&quot;utf-8&quot;));
+
+                        // 结束之后关闭流关闭客户端Socket
+                        os.close();
+                        mSocket.close();
+                        return;
+                    }
+                    // 向客户端回应消息
+                    os.write((content + &quot;:来自服务器的返回。\n&quot;).getBytes(&quot;utf-8&quot;));
+                } catch (SocketException e) {
+                    e.printStackTrace();
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+}
+</code></pre>
+
+<h3>2. 打开Socket的输入/输出流</h3>
+<pre><code>// 打开输入流
+BufferedReader mBufferedReader = new BufferedReader(
+            new InputStreamReader(mSocket.getInputStream(), &quot;utf-8&quot;));
+
+// 打开输出流
+OutputStream os = mSocket.getOutputStream();
+</code></pre>
+
+<p>具体使用详见上述代码。</p>
+<h3>3. 对Socket进行读写</h3>
+<pre><code>// 读
+String content = mBufferedReader.readLine();
+
+// 写
+os.write((content + &quot;:来自服务器的返回。\n&quot;).getBytes(&quot;utf-8&quot;));
+</code></pre>
+
+<h4>4. 关闭Socket</h4>
+<pre><code>mSocket.close();
+</code></pre>
+
+<h3>客户端</h3>
+<p>客户端创建正常Android项目即可。</p>
+<h4>1. 创建并与服务器Socket建立连接</h4>
+<p>建立连接通过端口号。</p>
+<pre><code>// ip地址本机地址，端口号要和服务端口号保持一致
+Socket mClient = new Socket(&quot;192.168.1.36&quot;, 4700);
+</code></pre>
+
+<h4>2. 打开Socket的输入/输出流</h4>
+<pre><code>BufferedReader in = null;
+PrintWriter out = null;
+
+in = new BufferedReader(new InputStreamReader(mClient.getInputStream()));
+out = new PrintWriter(mClient.getOutputStream());
+</code></pre>
+
+<h4>3. 对Socket进行读写操作</h4>
+<pre><code>// 写入数据，传递到服务器
+out.println(line);
+out.flush();
+
+// 读取到的服务器数据
+String echo = in.readLine();
+</code></pre>
+
+<h4>4. 关闭Socket</h4>
+<pre><code>if (&quot;bye&quot;.equals(line)){
+    if (in != null &amp;&amp; out != null) {
+        in.close();
+        out.close();
+        mClient.close();
+    }
+}
+</code></pre>
+
+<h1 id=3>Socket通信过程</h1>
+<p>总结过程：</p>
+<p><strong>服务器端：</strong></p>
+<ol>
+<li>创建一个ServerSocket，用于监听客户端Socket的连接请求</li>
+<li>采用循环不断接受来自客户端的请求</li>
+<li>每当接受到客户端Socket的请求，服务器端也对应产生一个Socket客户端</li>
+<li>IO流读写操作进行数据的传递</li>
+<li>关闭socket</li>
+</ol>
+<p><strong>客户端：</strong></p>
+<ol>
+<li>创建客户端socket(指定服务器端IP地址与端口号)</li>
+<li>连接(Android 创建Socket时会自动连接)</li>
+<li>与服务器端进行通信:IO流读写的操作</li>
+<li>关闭socket</li>
+</ol>
+<p><strong>附：其他常问面试题</strong></p>
+<blockquote>
+<p>TCP与UDP的区别？</p>
+</blockquote>
+<pre><code>UDP:
+将数据源和目的封装成数据包中，不需要建立连接
+每个数据包的大小在限制在 64k
+因无连接，是不可靠协议
+不需要建立连接，速度快
+
+TCP:
+通过三次握手完成连接，是可靠协议
+建立连接，形成传输数据的通道
+在连接中进行大数据量传输
+必须建立连接，效率会稍低
+</code></pre>
+
+
+</body>
+</html>
+<!-- This document was created with MarkdownPad, the Markdown editor for Windows (http://markdownpad.com) -->
