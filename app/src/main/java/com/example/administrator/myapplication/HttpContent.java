@@ -8,6 +8,8 @@ import java.util.HashMap;
  */
 
 public class HttpContent {
+
+
     private final HashMap<String, String> requseHeaders;
 
     private Socket underlySocket;
