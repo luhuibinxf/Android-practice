@@ -1,9 +1,8 @@
-package com.example.administrator.myapplication;
+package com.example.administrator.myapplication.commlt;
 
 import android.util.Log;
-import android.widget.Toast;
 
-import org.apache.http.params.HttpParams;
+import com.example.administrator.myapplication.util.StreamToolkit;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -12,7 +11,6 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 

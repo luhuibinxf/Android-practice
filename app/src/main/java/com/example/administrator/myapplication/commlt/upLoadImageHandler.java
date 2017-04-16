@@ -1,4 +1,7 @@
-package com.example.administrator.myapplication;
+package com.example.administrator.myapplication.commlt;
+
+import com.example.administrator.myapplication.commlt.HttpContent;
+import com.example.administrator.myapplication.commlt.IResourcUrlHandler;
 
 import java.io.FileOutputStream;
 import java.io.IOException;

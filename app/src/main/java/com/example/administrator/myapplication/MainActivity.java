@@ -4,8 +4,12 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.view.menu.MenuView;
 import android.widget.ImageView;
+
+import com.example.administrator.myapplication.commlt.ResourceInAssetHander;
+import com.example.administrator.myapplication.commlt.SimpleHttpServe;
+import com.example.administrator.myapplication.commlt.WebConfiguraction;
+import com.example.administrator.myapplication.commlt.upLoadImageHandler;
 
 import java.io.IOException;
 

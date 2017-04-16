@@ -1,4 +1,4 @@
-package com.example.administrator.myapplication;
+package com.example.administrator.myapplication.util;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;

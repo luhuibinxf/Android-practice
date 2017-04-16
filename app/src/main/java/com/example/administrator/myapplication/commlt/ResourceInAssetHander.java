@@ -1,6 +1,10 @@
-package com.example.administrator.myapplication;
+package com.example.administrator.myapplication.commlt;
 
 import android.content.Context;
+
+import com.example.administrator.myapplication.commlt.HttpContent;
+import com.example.administrator.myapplication.commlt.IResourcUrlHandler;
+import com.example.administrator.myapplication.util.StreamToolkit;
 
 import java.io.IOException;
 import java.io.InputStream;

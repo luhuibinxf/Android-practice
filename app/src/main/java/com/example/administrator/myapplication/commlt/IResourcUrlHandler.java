@@ -1,4 +1,6 @@
-package com.example.administrator.myapplication;
+package com.example.administrator.myapplication.commlt;
+
+import com.example.administrator.myapplication.commlt.HttpContent;
 
 import java.io.IOException;
 
